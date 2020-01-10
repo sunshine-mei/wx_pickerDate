@@ -1,5 +1,5 @@
 <!--date/index.wxml-->
 <view>
   <text style="color: red">选中日期：{{endTime}}</text>
-  <pickerDate fields="day" placeholder="请选择离职日期" quick bind:changeDate="onChangeDate"></pickerDate>
+  <pickerDate fields="day" selectDate="{{endTime}}" placeholder="请选择离职日期" quick bind:changeDate="onChangeDate"></pickerDate>
 </view>
