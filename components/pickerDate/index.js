@@ -16,6 +16,34 @@ Component({
     placeholder: {
       type: String,
       value: ''
+    },
+    selectDate: {
+      type: String,
+      value: '',
+    }
+  },
+  
+  observers: { //监听日期是否改变并给年月日赋值
+    selectDate: function(val){
+      if(val !== ''){
+        let arr = val.split('-')
+        if(arr.length === 1) {
+          this.setData({
+            year: Number(arr[0])
+          })
+        } else if (arr.length === 2) {
+          this.setData({
+            year: Number(arr[0]),
+            month: Number(arr[1])
+          })
+        } else if (arr.length === 3) {
+          this.setData({
+            year: Number(arr[0]),
+            month: Number(arr[1]),
+            day: Number(arr[2])
+          })
+        }
+      }
     }
   },
 
@@ -46,28 +74,42 @@ Component({
     // 关闭选框
     selectBirthday: function (e) {
       let index = e.currentTarget.dataset.index;
-      if (index && this.val) { // 确定选择 更换改变后的日期
-        date.setDate(this.data.quick, this.data.years[this.val[0]], this.data.months[this.val[1]], this.data.days[this.val[2]], this)
+      if (index && index == 1) { // 确定选择 更换改变后的日期
+        if (this.val) {
+          date.setDate(this.data.quick, this.data.years[this.val[0]], this.data.months[this.val[1]], this.data.days[this.val[2]], this)
+        } else {
+          date.setDate(this.data.quick, this.data.years[this.value[0]], this.data.months[this.value[1]], this.data.days[this.value[2]], this)
+        }
+
+        let res = ''
+        let data = {}
+        if (this.data.year === '至今') {
+          res = this.data.year
+          data.date = res
+          data.year = this.data.year
+        } else if (this.data.fields === 'year') {
+          res = this.data.year
+          data.date = res
+          data.year = this.data.year
+        } else if (this.data.fields === 'month') {
+          res = this.data.year + '-' + this.data.month
+          data.date = res
+          data.year = this.data.year
+          data.month = this.data.month
+        } else {
+          res = this.data.year + '-' + this.data.month + '-' + this.data.day
+          data.date = res
+          data.year = this.data.year
+          data.month = this.data.month
+          data.day = this.data.day
+        }
+        this.triggerEvent('changeDate', data)
       } else { // 取消选择 还原改变前的日期
         date.setDate(this.data.quick, this.data.years[this.value[0]], this.data.months[this.value[1]], this.data.days[this.value[2]], this)
       }
       this.setData({
         pickerDateshow: false,
       })
-      let res = ''
-      if (this.data.year === '至今') {
-        res = this.data.year
-      } else if (this.data.fields === 'year') {
-        res = this.data.year
-      } else if (this.data.fields === 'month') {
-        res = this.data.year + '-' + this.data.month
-      } else {
-        res = this.data.year + '-' + this.data.month + '-' + this.data.day
-      }
-      this.setData({
-        selectDate: res
-      })
-      this.triggerEvent('changeDate', res)
     },
     bindChange: function (e) {
       let val = e.detail.value;
